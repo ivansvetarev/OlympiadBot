@@ -13,10 +13,17 @@ async def process_start_command(message: types.Message):
 async def process_help_command(message: types.Message):
     await message.reply("Напиши мне что-нибудь, и я отпрпавлю этот текст тебе в ответ!")
 
-@dp.message_handler()
+@dp.message_handler(commands=['olympiads'])
 async def list_of_olympiads(message: types.Message):
-    for subject in olympiads:
-        await bot.send_message(message.from_user.id, subject)
+    
+    rep = ""
+
+    for olympiad in range(15):
+       rep = olympiads[olympiad].subject_name +  "\n" + olympiads[olympiad].subject_name + "\n" + olympiads[olympiad].classes + "\n" + olympiads[olympiad].level
+
+    await bot.send_message(message.from_user.id, 
+            olympiad.name 
+                )
 
 # @dp.message_handler()
 # async def echo_message(msg: types.Message):
@@ -24,4 +31,5 @@ async def list_of_olympiads(message: types.Message):
 
 
 if __name__ == '__main__':
+    print("started")
     executor.start_polling(dp, skip_updates=True)
