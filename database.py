@@ -1,6 +1,7 @@
 import sqlite3
-from parsing.info_parser import *
+from info_parser import *
 from bs4 import BeautifulSoup
+import requests
 
 URL = "https://olimpiada.ru/activities"
 
@@ -33,7 +34,7 @@ except sqlite3.Error as error:
 
 try:
     olymp_counter = 0
-    for olympiad_url in get_olympiads_urls(URL):
+    for olympiad_url in  get_olympiads_urls(URL):
         olympiad_html = requests.get(olympiad_url)
         olympiad_soup = BeautifulSoup(olympiad_html.text)
         # print("\n", get_name(olympiad_soup),
@@ -45,13 +46,13 @@ try:
         #       "\n Tasks: ", get_ref_to_tasks(olympiad_url),
         #       "\n"
         #       )
-        subjects = get_subjects(olympiad_soup)
-        name = get_name(olympiad_soup)
+        subjects =  get_subjects(olympiad_soup)
+        name =  get_name(olympiad_soup)
         classes = "13"
-        if(get_classes(olympiad_soup) != None) : classes = get_classes(olympiad_soup)
+        if( get_classes(olympiad_soup) != None) : classes =  get_classes(olympiad_soup)
         levels = "5"
-        if(get_levels(olympiad_soup) != None) : classes = get_levels(olympiad_soup)
-        ref_to_tasks = get_ref_to_tasks(olympiad_url)
+        if( get_levels(olympiad_soup) != None) : classes =  get_levels(olympiad_soup)
+        ref_to_tasks =  get_ref_to_tasks(olympiad_url)
         execute_str = """INSERT INTO olympiads (olympiad_id ,subjects, name, classes, levels, ref_to_tasks, olympiad_url) VALUES(?, ?, ?, ?, ?, ?, ?)"""
         cursor.execute(execute_str, 
                                     (
@@ -63,8 +64,9 @@ try:
                                     ref_to_tasks,
                                     olympiad_url
                                     ))
+        connect.commit()
         execute_str = """INSERT INTO events (id, event, start_date, end_date) VALUES(?, ?, ?, ?)"""
-        for event in get_dates(olympiad_soup):
+        for event in  get_dates(olympiad_soup):
             cursor.execute(execute_str, 
                         (
                             olymp_counter, 
@@ -72,11 +74,12 @@ try:
                             event[1],
                             event[2]
                         ))
-        cursor.close()
+        connect.commit()
         olymp_counter += 1
     for value in cursor.execute("SELECT * FROM  olympiads"):
         for event in cursor.execute("SELECT * FROM events"):
             print(event)
+    cursor.close()
 except sqlite3.Error as error:
     print("Failed to insert data ", error)
 finally:
