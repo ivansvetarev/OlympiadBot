@@ -7,7 +7,7 @@ URL = "https://olimpiada.ru/activities"
 
     
 try:
-    connect = sqlite3.connect("olympiads_info.db")
+    connect = sqlite3.connect("olympiads_info_test.db")
     cursor = connect.cursor()
 
     connect.execute("""CREATE TABLE IF NOT EXISTS olympiads (

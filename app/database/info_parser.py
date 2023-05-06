@@ -183,7 +183,7 @@ def get_subjects(olympiad_soup):
                         else:
                             subject += " "
                 subject = subject[1:len(subject)]
-                subjects += subject
+                subjects += " " + subject
         return subjects
     except Exception as e:
         #print(e)
